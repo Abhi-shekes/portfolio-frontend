@@ -1,4 +1,4 @@
-
+"use client"
 
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -30,6 +30,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm()
 
@@ -58,10 +59,20 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
 
   const fetchData = async () => {
     try {
-      const response = (await api.getAll) ? await api.getAll() : await api.get()
-      setData(Array.isArray(response.data) ? response.data : [response.data].filter(Boolean))
+      console.log("[v0] Fetching data for", sectionName)
+      const response =
+        sectionName === "hero" || sectionName === "about"
+          ? await api.get()
+          : api.getAll
+            ? await api.getAll()
+            : await api.get()
+
+      const responseData = response.data
+      console.log("[v0] Fetched data:", responseData)
+
+      setData(Array.isArray(responseData) ? responseData : [responseData].filter(Boolean))
     } catch (error) {
-      console.error(`Error fetching ${sectionName} data:`, error)
+      console.error(`[v0] Error fetching ${sectionName} data:`, error)
       setData([])
     } finally {
       setLoading(false)
@@ -70,7 +81,12 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
 
   const onSubmit = async (formData) => {
     try {
-      if (editingItem) {
+      console.log("[v0] Form submission for", sectionName, ":", formData)
+
+      if (sectionName === "hero" || sectionName === "about") {
+        await api.update(formData)
+        toast.success(`${sectionLabel} updated successfully`)
+      } else if (editingItem) {
         if (api.update) {
           await api.update(editingItem._id, formData)
         } else {
@@ -91,7 +107,8 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
       setEditingItem(null)
       reset()
     } catch (error) {
-      toast.error(`Failed to save ${sectionLabel.toLowerCase()}`)
+      console.error("[v0] Form submission error:", error)
+      toast.error(`Failed to save ${sectionLabel.toLowerCase()}: ${error.response?.data?.message || error.message}`)
     }
   }
 
@@ -136,7 +153,12 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-              <ImageInput register={register} name="profileImage" placeholder="Profile Image URL or upload file" />
+              <ImageInput
+                register={register}
+                name="profileImage"
+                placeholder="Profile Image URL or upload file"
+                setValue={setValue}
+              />
             </div>
             <input
               {...register("resumeUrl")}
@@ -188,7 +210,12 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">About Image</label>
-              <ImageInput register={register} name="image" placeholder="About section image URL or upload file" />
+              <ImageInput
+                register={register}
+                name="image"
+                placeholder="About section image URL or upload file"
+                setValue={setValue}
+              />
             </div>
           </div>
         )
@@ -364,7 +391,12 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Project Image</label>
-              <ImageInput register={register} name="image" placeholder="Project image URL or upload file" />
+              <ImageInput
+                register={register}
+                name="image"
+                placeholder="Project image URL or upload file"
+                setValue={setValue}
+              />
             </div>
             <textarea
               {...register("description", { required: "Description is required" })}

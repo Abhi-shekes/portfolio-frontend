@@ -1,5 +1,4 @@
-
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import toast from "react-hot-toast"
 
 const ImageInput = ({
@@ -9,10 +8,17 @@ const ImageInput = ({
   value = "",
   onChange,
   className = "",
+  setValue,
 }) => {
   const [preview, setPreview] = useState(value)
   const [inputType, setInputType] = useState(value && value.startsWith("data:") ? "file" : "url")
   const fileInputRef = useRef(null)
+
+  useEffect(() => {
+    if (value !== preview) {
+      setPreview(value)
+    }
+  }, [value])
 
   const handleFileChange = (event) => {
     const file = event.target.files[0]
@@ -32,7 +38,12 @@ const ImageInput = ({
       const reader = new FileReader()
       reader.onload = (e) => {
         const base64 = e.target.result
+        console.log("[v0] File converted to base64, size:", base64.length)
         setPreview(base64)
+
+        if (setValue) {
+          setValue(name, base64)
+        }
         if (onChange) {
           onChange(base64)
         }
@@ -43,14 +54,24 @@ const ImageInput = ({
 
   const handleUrlChange = (event) => {
     const url = event.target.value
+    console.log("[v0] URL changed:", url)
     setPreview(url)
+
+    if (setValue) {
+      setValue(name, url)
+    }
     if (onChange) {
       onChange(url)
     }
   }
 
   const clearImage = () => {
+    console.log("[v0] Clearing image")
     setPreview("")
+
+    if (setValue) {
+      setValue(name, "")
+    }
     if (onChange) {
       onChange("")
     }
@@ -90,20 +111,21 @@ const ImageInput = ({
           type="url"
           placeholder={placeholder}
           onChange={handleUrlChange}
+          value={preview}
           className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       ) : (
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+          <input {...register(name)} type="hidden" value={preview} />
+        </>
       )}
-
-      {/* Hidden input for form registration when using file upload */}
-      {inputType === "file" && <input {...register(name)} type="hidden" value={preview} />}
 
       {/* Preview */}
       {preview && (
@@ -113,6 +135,7 @@ const ImageInput = ({
             alt="Preview"
             className="w-32 h-32 object-cover rounded border"
             onError={() => {
+              console.log("[v0] Image load error")
               setPreview("")
               toast.error("Failed to load image")
             }}
