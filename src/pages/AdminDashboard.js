@@ -1,4 +1,4 @@
-
+"use client"
 
 import { useState, useEffect } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
@@ -9,6 +9,7 @@ import SectionManager from "../components/admin/SectionManager"
 import SectionToggle from "../components/admin/SectionToggle"
 import StatsCard from "../components/admin/StatsCard"
 import ContactMessages from "../components/admin/ContactMessages"
+import SliderManager from "../components/admin/SliderManager"
 
 const AdminDashboard = () => {
   const [sections, setSections] = useState([])
@@ -80,11 +81,28 @@ const AdminDashboard = () => {
     (s) => ["experience", "education", "certifications", "courses"].includes(s.name) && s.isEnabled,
   )
 
-  const workSections = sections.filter((s) => ["projects", "publications", "patents"].includes(s.name) && s.isEnabled)
+  const workSections = sections.filter(
+    (s) =>
+      [
+        "projects",
+        "publications",
+        "patents",
+        "talks",
+        "internships",
+        "workshops",
+        "trainings",
+        "journalpapers",
+        "researchpapers",
+        "conferencepapers",
+        "bookchapters",
+      ].includes(s.name) && s.isEnabled,
+  )
 
   const recognitionSections = sections.filter(
-    (s) => ["awards", "testscores", "volunteer"].includes(s.name) && s.isEnabled,
+    (s) => ["awards", "testscores", "volunteer", "appreciations"].includes(s.name) && s.isEnabled,
   )
+
+  const gallerySections = sections.filter((s) => ["gallery"].includes(s.name) && s.isEnabled)
 
   const sectionLabels = {
     hero: "Hero Section",
@@ -102,10 +120,20 @@ const AdminDashboard = () => {
     certifications: "Certifications",
     courses: "Courses",
     contact: "Contact",
+    talks: "Talks Delivered",
+    internships: "Internships Offered",
+    workshops: "Workshops",
+    trainings: "Trainings",
+    appreciations: "Appreciations & Awards",
+    journalpapers: "Journal Papers",
+    researchpapers: "Research Papers",
+    conferencepapers: "Conference Papers",
+    bookchapters: "Book Chapters",
+    gallery: "Gallery",
   }
 
   return (
-    <AdminLayout unreadMessages={unreadMessages}>
+    <AdminLayout unreadCount={unreadMessages}>
       <Routes>
         <Route
           path="/"
@@ -223,7 +251,7 @@ const AdminDashboard = () => {
                 <div>
                   <div className="mb-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Work & Projects</h2>
-                    <p className="text-gray-600">Showcase your projects, publications, and patents</p>
+                    <p className="text-gray-600">Showcase your projects, publications, patents, and activities</p>
                   </div>
                   <div className="space-y-8">
                     {workSections.map((section) => (
@@ -242,10 +270,31 @@ const AdminDashboard = () => {
                 <div>
                   <div className="mb-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Recognition & Achievements</h2>
-                    <p className="text-gray-600">Highlight your awards, test scores, and volunteer work</p>
+                    <p className="text-gray-600">
+                      Highlight your awards, appreciations, test scores, and volunteer work
+                    </p>
                   </div>
                   <div className="space-y-8">
                     {recognitionSections.map((section) => (
+                      <SectionManager
+                        key={section.name}
+                        sectionName={section.name}
+                        sectionLabel={sectionLabels[section.name] || section.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Gallery Section */}
+              {gallerySections.length > 0 && (
+                <div>
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Gallery</h2>
+                    <p className="text-gray-600">Manage your portfolio gallery images</p>
+                  </div>
+                  <div className="space-y-8">
+                    {gallerySections.map((section) => (
                       <SectionManager
                         key={section.name}
                         sectionName={section.name}
@@ -259,6 +308,15 @@ const AdminDashboard = () => {
           }
         />
         <Route path="/messages" element={<ContactMessages onMessagesUpdate={fetchUnreadMessages} />} />
+        <Route
+          path="/slider"
+          element={
+            <div>
+           
+              <SliderManager />
+            </div>
+          }
+        />
       </Routes>
     </AdminLayout>
   )

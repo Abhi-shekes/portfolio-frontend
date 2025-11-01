@@ -19,6 +19,16 @@ import {
   languagesAPI,
   certificationsAPI,
   coursesAPI,
+  talksAPI,
+  internshipsAPI,
+  workshopsAPI,
+  trainingsAPI,
+  appreciationsAPI,
+  journalPapersAPI,
+  researchPapersAPI,
+  conferencePapersAPI,
+  bookChaptersAPI,
+  galleryAPI,
 } from "../../services/api"
 
 const SectionManager = ({ sectionName, sectionLabel }) => {
@@ -49,6 +59,16 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
     languages: languagesAPI,
     certifications: certificationsAPI,
     courses: coursesAPI,
+    talks: talksAPI,
+    internships: internshipsAPI,
+    workshops: workshopsAPI,
+    trainings: trainingsAPI,
+    appreciations: appreciationsAPI,
+    journalpapers: journalPapersAPI,
+    researchpapers: researchPapersAPI,
+    conferencepapers: conferencePapersAPI,
+    bookchapters: bookChaptersAPI,
+    gallery: galleryAPI,
   }
 
   const api = apiMap[sectionName]
@@ -863,14 +883,383 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
           </div>
         )
 
-      default:
+      case "talks":
         return (
-          <div className="text-center py-8 text-gray-500">
-            Form for {sectionLabel} is not implemented yet.
-            <br />
-            This section can be managed through the API directly.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Talk Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("event", { required: "Event is required" })}
+              placeholder="Event Name"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("date", { required: "Date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("location")}
+              placeholder="Location"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Talk Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <input
+              {...register("link")}
+              placeholder="Talk Link/Recording URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
         )
+
+      case "internships":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Internship Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("company", { required: "Company is required" })}
+              placeholder="Company Name"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("startDate", { required: "Start date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("endDate")}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Internship Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <input
+              {...register("skills")}
+              placeholder="Skills Gained (comma-separated)"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        )
+
+      case "workshops":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Workshop Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <select
+              {...register("type", { required: "Type is required" })}
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select Type</option>
+              <option value="attended">Attended</option>
+              <option value="conducted">Conducted</option>
+            </select>
+            <input
+              {...register("date", { required: "Date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("location")}
+              placeholder="Location"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Workshop Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <input
+              {...register("organizer")}
+              placeholder="Organizer/Conductor"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        )
+
+      case "trainings":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Training Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("provider", { required: "Provider is required" })}
+              placeholder="Training Provider"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("startDate", { required: "Start date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("endDate")}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Training Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <input
+              {...register("certificateUrl")}
+              placeholder="Certificate URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        )
+
+      case "appreciations":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Appreciation/Award Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("issuer", { required: "Issuer is required" })}
+              placeholder="Issuing Organization"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("date", { required: "Date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Image</label>
+              <ImageInput
+                register={register}
+                name="certificateImage"
+                placeholder="Certificate image URL or upload file"
+                setValue={setValue}
+              />
+            </div>
+          </div>
+        )
+
+      case "journalpapers":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Paper Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("journal", { required: "Journal is required" })}
+              placeholder="Journal Name"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("authors")}
+              placeholder="Authors (comma-separated)"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publicationDate", { required: "Publication date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("doi")}
+              placeholder="DOI"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("url")}
+              placeholder="Paper URL"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("abstract")}
+              placeholder="Abstract"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+          </div>
+        )
+
+      case "researchpapers":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Research Paper Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("authors")}
+              placeholder="Authors (comma-separated)"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publicationDate", { required: "Publication date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("url")}
+              placeholder="Paper URL"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+          </div>
+        )
+
+      case "conferencepapers":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Conference Paper Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("conference", { required: "Conference is required" })}
+              placeholder="Conference Name"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("authors")}
+              placeholder="Authors (comma-separated)"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publicationDate", { required: "Publication date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("location")}
+              placeholder="Conference Location"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("url")}
+              placeholder="Paper URL"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("abstract")}
+              placeholder="Abstract"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+          </div>
+        )
+
+      case "bookchapters":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Chapter Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("bookTitle", { required: "Book title is required" })}
+              placeholder="Book Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("authors")}
+              placeholder="Authors (comma-separated)"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publisher")}
+              placeholder="Publisher"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publicationDate", { required: "Publication date is required" })}
+              type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("isbn")}
+              placeholder="ISBN"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <textarea
+              {...register("description")}
+              placeholder="Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+          </div>
+        )
+
+      case "gallery":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Image Title"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("category")}
+              placeholder="Category"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Image</label>
+              <ImageInput register={register} name="image" placeholder="Image URL or upload file" setValue={setValue} />
+            </div>
+            <textarea
+              {...register("description")}
+              placeholder="Image Description"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+            />
+            <div className="flex items-center space-x-2">
+              <input {...register("featured")} type="checkbox" className="rounded" />
+              <label className="text-sm text-gray-700">Featured Image</label>
+            </div>
+          </div>
+        )
+
+      default:
+        return <div>No form available for this section</div>
     }
   }
 
@@ -915,10 +1304,8 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 )}
                 {sectionName === "skills" && (
                   <div>
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-gray-600">
-                      {item.category} - {item.level}
-                    </p>
+                    <h3 className="font-semibold">{item.category}</h3>
+                    <p className="text-gray-600">{item.skills?.length || 0} skills</p>
                   </div>
                 )}
                 {sectionName === "projects" && (
@@ -929,7 +1316,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 )}
                 {sectionName === "volunteer" && (
                   <div>
-                    <h3 className="font-semibold">{item.position}</h3>
+                    <h3 className="font-semibold">{item.role}</h3>
                     <p className="text-gray-600">{item.organization}</p>
                   </div>
                 )}
@@ -975,8 +1362,75 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 )}
                 {sectionName === "courses" && (
                   <div>
+                    <h3 className="font-semibold">{item.name}</h3>
+                    <p className="text-gray-600">{item.provider}</p>
+                  </div>
+                )}
+                {sectionName === "talks" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.event}</p>
+                  </div>
+                )}
+                {sectionName === "internships" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.company}</p>
+                  </div>
+                )}
+                {sectionName === "workshops" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">
+                      {item.type} - {item.location}
+                    </p>
+                  </div>
+                )}
+                {sectionName === "trainings" && (
+                  <div>
                     <h3 className="font-semibold">{item.title}</h3>
                     <p className="text-gray-600">{item.provider}</p>
+                  </div>
+                )}
+                {sectionName === "appreciations" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.awardedBy}</p>
+                  </div>
+                )}
+                {sectionName === "journalpapers" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.journal}</p>
+                  </div>
+                )}
+                {sectionName === "researchpapers" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">
+                      {Array.isArray(item.authors)
+                        ? item.authors.join(", ").substring(0, 50)
+                        : item.authors?.substring(0, 50)}
+                      ...
+                    </p>
+                  </div>
+                )}
+                {sectionName === "conferencepapers" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.conference}</p>
+                  </div>
+                )}
+                {sectionName === "bookchapters" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.bookTitle}</p>
+                  </div>
+                )}
+                {sectionName === "gallery" && (
+                  <div>
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-gray-600">{item.category}</p>
                   </div>
                 )}
               </div>

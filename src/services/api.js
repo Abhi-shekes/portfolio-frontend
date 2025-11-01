@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API_BASE_URL ="http://localhost:4000/api"
+const API_BASE_URL = "http://localhost:4000/api"
 
 // Create axios instance
 const api = axios.create({
@@ -166,4 +166,95 @@ export const contactAPI = {
   delete: (id) => api.delete(`/contact/${id}`),
 }
 
-export default api
+// Talks API
+export const talksAPI = {
+  getAll: () => api.get("/talks"),
+  create: (data) => api.post("/talks", data),
+  update: (id, data) => api.put(`/talks/${id}`, data),
+  delete: (id) => api.delete(`/talks/${id}`),
+}
+
+// Internships API
+export const internshipsAPI = {
+  getAll: () => api.get("/internships"),
+  create: (data) => api.post("/internships", data),
+  update: (id, data) => api.put(`/internships/${id}`, data),
+  delete: (id) => api.delete(`/internships/${id}`),
+}
+
+// Workshops API
+export const workshopsAPI = {
+  getAll: () => api.get("/workshops"),
+  getAttended: () => api.get("/workshops/attended"),
+  getConducted: () => api.get("/workshops/conducted"),
+  create: (data) => api.post("/workshops", data),
+  update: (id, data) => api.put(`/workshops/${id}`, data),
+  delete: (id) => api.delete(`/workshops/${id}`),
+}
+
+// Trainings API
+export const trainingsAPI = {
+  getAll: () => api.get("/trainings"),
+  create: (data) => api.post("/trainings", data),
+  update: (id, data) => api.put(`/trainings/${id}`, data),
+  delete: (id) => api.delete(`/trainings/${id}`),
+}
+
+// Appreciations API
+export const appreciationsAPI = {
+  getAll: () => api.get("/appreciations"),
+  create: (data) => api.post("/appreciations", data),
+  update: (id, data) => api.put(`/appreciations/${id}`, data),
+  delete: (id) => api.delete(`/appreciations/${id}`),
+}
+
+// Journal Papers API
+export const journalPapersAPI = {
+  getAll: () => api.get("/journal-papers"),
+  create: (data) => api.post("/journal-papers", data),
+  update: (id, data) => api.put(`/journal-papers/${id}`, data),
+  delete: (id) => api.delete(`/journal-papers/${id}`),
+}
+
+// Research Papers API
+export const researchPapersAPI = {
+  getAll: () => api.get("/research-papers"),
+  create: (data) => api.post("/research-papers", data),
+  update: (id, data) => api.put(`/research-papers/${id}`, data),
+  delete: (id) => api.delete(`/research-papers/${id}`),
+}
+
+// Conference Papers API
+export const conferencePapersAPI = {
+  getAll: () => api.get("/conference-papers"),
+  create: (data) => api.post("/conference-papers", data),
+  update: (id, data) => api.put(`/conference-papers/${id}`, data),
+  delete: (id) => api.delete(`/conference-papers/${id}`),
+}
+
+// Book Chapters API
+export const bookChaptersAPI = {
+  getAll: () => api.get("/book-chapters"),
+  create: (data) => api.post("/book-chapters", data),
+  update: (id, data) => api.put(`/book-chapters/${id}`, data),
+  delete: (id) => api.delete(`/book-chapters/${id}`),
+}
+
+// Gallery API
+export const galleryAPI = {
+  getAll: () => api.get("/gallery"),
+  getFeatured: () => api.get("/gallery/featured"),
+  create: (data) => api.post("/gallery", data),
+  update: (id, data) => api.put(`/gallery/${id}`, data),
+  delete: (id) => api.delete(`/gallery/${id}`),
+}
+export const sliderAPI = {
+  getAll: () => api.get("/slider"),
+  addImage: (data) => api.post("/slider/add-image", data),
+  deleteImage: (imageId) => api.delete(`/slider/delete-image/${imageId}`),
+  toggle: () => api.post("/slider/toggle"),
+  reorder: (imageIds) => api.post("/slider/reorder", { imageIds }),
+  updateImage: (imageId, data) => api.put(`/slider/update-image/${imageId}`, data), // Add this
+}
+
+export { api }

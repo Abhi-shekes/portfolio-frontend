@@ -1,11 +1,13 @@
-
+"use client"
 
 import { useState, useEffect } from "react"
+import { Link, useLocation } from "react-router-dom"
 
 const Navigation = ({ sections }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
+  const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,6 +72,15 @@ const Navigation = ({ sections }) => {
     setActiveDropdown(activeDropdown === category ? null : category)
   }
 
+  const pageLinks = [
+    { path: "/", label: "Home" },
+    { path: "/activities", label: "Activities" },
+    { path: "/publications", label: "Publications" },
+    { path: "/gallery", label: "Gallery" },
+  ]
+
+  const isHomePage = location.pathname === "/"
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -79,65 +90,80 @@ const Navigation = ({ sections }) => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <button
-              onClick={() => scrollToSection("hero")}
+            <Link
+              to="/"
               className="text-xl font-bold text-white hover:text-blue-400 transition-all duration-300 tracking-tight"
             >
               Portfolio
-            </button>
+            </Link>
           </div>
 
           <div className="hidden lg:block">
             <div className="flex items-center space-x-1">
-              {Object.entries(navigationCategories).map(([category, config]) => (
-                <div key={category} className="relative group">
-                  <button
-                    onMouseEnter={() => setActiveDropdown(category)}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                    className="flex items-center space-x-2 text-slate-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/5"
-                  >
-                    <span>{config.label}</span>
-                    <svg
-                      className="w-4 h-4 transition-transform duration-200"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {activeDropdown === category && (
-                    <div
-                      className="absolute top-full left-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-2xl py-2"
-                      onMouseEnter={() => setActiveDropdown(category)}
-                      onMouseLeave={() => setActiveDropdown(null)}
-                    >
-                      {config.sections.map((sectionName) => {
-                        const sectionExists = sections.find((s) => s.name === sectionName)
-                        if (!sectionExists) return null
-
-                        return (
-                          <button
-                            key={sectionName}
-                            onClick={() => scrollToSection(sectionName)}
-                            className="w-full text-left px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
-                          >
-                            {sectionLabels[sectionName] || sectionName}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
+              {pageLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-slate-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/5 ${
+                    location.pathname === link.path ? "text-white bg-white/10" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
               ))}
 
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="ml-4 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
-              >
-                Contact
-              </button>
+              {isHomePage &&
+                Object.entries(navigationCategories).map(([category, config]) => (
+                  <div key={category} className="relative group">
+                    <button
+                      onMouseEnter={() => setActiveDropdown(category)}
+                      onMouseLeave={() => setActiveDropdown(null)}
+                      className="flex items-center space-x-2 text-slate-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/5"
+                    >
+                      <span>{config.label}</span>
+                      <svg
+                        className="w-4 h-4 transition-transform duration-200"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {activeDropdown === category && (
+                      <div
+                        className="absolute top-full left-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-2xl py-2"
+                        onMouseEnter={() => setActiveDropdown(category)}
+                        onMouseLeave={() => setActiveDropdown(null)}
+                      >
+                        {config.sections.map((sectionName) => {
+                          const sectionExists = sections && sections.find((s) => s.name === sectionName)
+                          if (!sectionExists) return null
+
+                          return (
+                            <button
+                              key={sectionName}
+                              onClick={() => scrollToSection(sectionName)}
+                              className="w-full text-left px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
+                            >
+                              {sectionLabels[sectionName] || sectionName}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+              {isHomePage && (
+                <button
+                  onClick={() => scrollToSection("contact")}
+                  className="ml-4 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+                >
+                  Contact
+                </button>
+              )}
             </div>
           </div>
 
@@ -160,52 +186,68 @@ const Navigation = ({ sections }) => {
         {isMenuOpen && (
           <div className="lg:hidden">
             <div className="px-2 pt-2 pb-6 space-y-1 bg-slate-900/95 backdrop-blur-md rounded-xl mt-2 border border-slate-800/50 shadow-2xl">
-              {Object.entries(navigationCategories).map(([category, config]) => (
-                <div key={category} className="space-y-1">
-                  <button
-                    onClick={() => handleDropdownToggle(category)}
-                    className="w-full flex items-center justify-between text-slate-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-base font-medium transition-all duration-300"
-                  >
-                    <span>{config.label}</span>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        activeDropdown === category ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {activeDropdown === category && (
-                    <div className="ml-4 space-y-1">
-                      {config.sections.map((sectionName) => {
-                        const sectionExists = sections.find((s) => s.name === sectionName)
-                        if (!sectionExists) return null
-
-                        return (
-                          <button
-                            key={sectionName}
-                            onClick={() => scrollToSection(sectionName)}
-                            className="w-full text-left text-slate-400 hover:text-white hover:bg-white/5 px-4 py-2 rounded-lg text-sm transition-all duration-300"
-                          >
-                            {sectionLabels[sectionName] || sectionName}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
+              {pageLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`block text-slate-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 ${
+                    location.pathname === link.path ? "text-white bg-white/10" : ""
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
               ))}
 
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 mt-4"
-              >
-                Contact
-              </button>
+              {isHomePage &&
+                Object.entries(navigationCategories).map(([category, config]) => (
+                  <div key={category} className="space-y-1">
+                    <button
+                      onClick={() => handleDropdownToggle(category)}
+                      className="w-full flex items-center justify-between text-slate-300 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-base font-medium transition-all duration-300"
+                    >
+                      <span>{config.label}</span>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          activeDropdown === category ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {activeDropdown === category && (
+                      <div className="ml-4 space-y-1">
+                        {config.sections.map((sectionName) => {
+                          const sectionExists = sections && sections.find((s) => s.name === sectionName)
+                          if (!sectionExists) return null
+
+                          return (
+                            <button
+                              key={sectionName}
+                              onClick={() => scrollToSection(sectionName)}
+                              className="w-full text-left text-slate-400 hover:text-white hover:bg-white/5 px-4 py-2 rounded-lg text-sm transition-all duration-300"
+                            >
+                              {sectionLabels[sectionName] || sectionName}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+              {isHomePage && (
+                <button
+                  onClick={() => scrollToSection("contact")}
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 mt-4"
+                >
+                  Contact
+                </button>
+              )}
             </div>
           </div>
         )}
