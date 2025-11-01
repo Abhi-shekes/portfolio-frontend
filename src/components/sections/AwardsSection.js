@@ -1,6 +1,7 @@
-
 import { useState, useEffect } from "react"
 import { awardsAPI } from "../../services/api"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm" // ✅ Enables bold, italic, lists, tables, etc.
 
 const AwardsSection = () => {
   const [awards, setAwards] = useState([])
@@ -72,7 +73,13 @@ const AwardsSection = () => {
                 </div>
               </div>
 
-              {award.description && <p className="text-gray-700 mb-4 leading-relaxed">{award.description}</p>}
+              {award.description && (
+                <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {award.description}
+                  </ReactMarkdown>
+                </div>
+              )}
 
               {award.url && (
                 <a

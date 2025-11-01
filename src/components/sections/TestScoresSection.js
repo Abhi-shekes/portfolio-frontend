@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react"
 import { testScoresAPI } from "../../services/api"
+import remarkGfm from "remark-gfm"
 
 const TestScoresSection = () => {
   const [testScores, setTestScores] = useState([])
@@ -71,7 +72,14 @@ const TestScoresSection = () => {
 
               <p className="text-gray-600 mb-4">{formatDate(test.date)}</p>
 
-              {test.description && <p className="text-gray-700 text-sm leading-relaxed">{test.description}</p>}
+  {test.description && (
+    <div className="text-gray-700 text-sm leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {test.description}
+      </ReactMarkdown>
+    </div>
+  )}
+              {/* {test.description && <p className="text-gray-700 text-sm leading-relaxed">{test.description}</p>} */}
             </div>
           ))}
         </div>

@@ -1,6 +1,8 @@
-
 import { useState, useEffect } from "react"
 import { coursesAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
+
 
 const CoursesSection = () => {
   const [courses, setCourses] = useState([])
@@ -72,7 +74,13 @@ const CoursesSection = () => {
                 </div>
               </div>
 
-              {course.description && <p className="text-gray-700 mb-4 leading-relaxed">{course.description}</p>}
+                {course.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {course.description}
+      </ReactMarkdown>
+    </div>
+  )}
 
               {course.skills && course.skills.length > 0 && (
                 <div className="mb-4">

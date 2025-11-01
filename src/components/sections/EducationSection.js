@@ -1,6 +1,8 @@
-
 import { useState, useEffect } from "react"
 import { educationAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
+
 
 const EducationSection = () => {
   const [education, setEducation] = useState([])
@@ -77,7 +79,13 @@ const EducationSection = () => {
                 </div>
               </div>
 
-              {edu.description && <p className="text-gray-700 mb-4 leading-relaxed">{edu.description}</p>}
+              {edu.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {edu.description}
+      </ReactMarkdown>
+    </div>
+  )}
 
               {edu.achievements && edu.achievements.length > 0 && (
                 <div>

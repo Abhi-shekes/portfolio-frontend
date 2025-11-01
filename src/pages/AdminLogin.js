@@ -16,44 +16,34 @@ const AdminLogin = () => {
   } = useForm()
 
   useEffect(() => {
-    console.log("Checking for existing token in localStorage...")
     const token = localStorage.getItem("token")
     if (token) {
-      console.log("Token found:", token)
-      console.log("Navigating to /admin")
+
       navigate("/admin")
     } else {
-      console.log("No token found, stay on login page")
     }
   }, [navigate])
 
 const onSubmit = async (data, event) => {
       event?.preventDefault() // <-- prevent page reload
 
-    console.log("Form submitted with data:", data)
     setLoading(true)
     try {
-      console.log("Calling authAPI.login...")
       const response = await authAPI.login(data)
-      console.log("API Response:", response.data)
 
       const { token, user } = response.data
-      console.log("Token received:", token)
-      console.log("User data received:", user)
+   
 
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
-      console.log("Token and user saved to localStorage")
 
       toast.success("Login successful!")
-      console.log("Navigating to /admin")
       navigate("/admin")
     } catch (error) {
       console.error("Login failed with error:", error)
       toast.error(error.response?.data?.message || "Login failed")
     } finally {
       setLoading(false)
-      console.log("Loading set to false")
     }
   }
 

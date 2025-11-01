@@ -32,6 +32,9 @@ export default function GalleryPage() {
   const categories = ["all", ...new Set(images.map((img) => img.category).filter(Boolean))]
   const filteredImages = selectedCategory === "all" ? images : images.filter((img) => img.category === selectedCategory)
 
+  // Calculate number of images for layout
+  const imageCount = filteredImages.length
+
   if (loading) {
     return (
       <>
@@ -67,15 +70,17 @@ export default function GalleryPage() {
         {filteredImages.length === 0 ? (
           <p className="no-data">No images in gallery yet</p>
         ) : (
-          <div className="gallery-grid">
-            {filteredImages.map((image) => (
-              <div key={image._id} className="gallery-item" onClick={() => setSelectedImage(image)}>
-                <img src={image.image || "/placeholder.svg"} alt={image.title} />
-                <div className="overlay">
-                  <h3>{image.title}</h3>
+          <div className={`gallery-container ${imageCount <= 3 ? 'center-layout' : 'grid-layout'}`}>
+            <div className={`gallery-grid image-count-${imageCount}`}>
+              {filteredImages.map((image) => (
+                <div key={image._id} className="gallery-item" onClick={() => setSelectedImage(image)}>
+                  <img src={image.image || "/placeholder.svg"} alt={image.title} />
+                  <div className="overlay">
+                    <h3>{image.title}</h3>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 

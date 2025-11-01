@@ -1,6 +1,7 @@
-
 import { useState, useEffect } from "react"
 import { publicationsAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
 
 const PublicationsSection = () => {
   const [publications, setPublications] = useState([])
@@ -88,7 +89,16 @@ const PublicationsSection = () => {
                 )}
               </div>
 
-              {publication.abstract && <p className="text-gray-700 mb-4 leading-relaxed">{publication.abstract}</p>}
+          
+
+               {publication.abstract && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {publication.abstract}
+      </ReactMarkdown>
+    </div>
+  )}
+  
 
               <div className="flex flex-wrap gap-4">
                 {publication.url && (

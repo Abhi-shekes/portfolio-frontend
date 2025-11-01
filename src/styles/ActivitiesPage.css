@@ -64,10 +64,22 @@
 
 .activities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  justify-items: center;
+}
+
+/* Single item layout */
+.activities-grid:has(> :only-child) {
+  max-width: 500px;
+}
+
+/* Two items layout */
+.activities-grid:has(> :nth-child(2):not(:nth-child(3))) {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 800px;
 }
 
 .activity-card {
@@ -77,6 +89,12 @@
   padding: 25px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  height: fit-content;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .activity-card:hover {
@@ -119,6 +137,7 @@
   margin-top: 15px;
   line-height: 1.6;
   color: #cbd5e1;
+  flex-grow: 1;
 }
 
 .skills-list {
@@ -147,6 +166,7 @@
   text-decoration: none;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  align-self: flex-start;
 }
 
 .link-btn:hover {
@@ -159,6 +179,7 @@
   color: #94a3b8;
   padding: 40px;
   font-size: 1.1rem;
+  grid-column: 1 / -1;
 }
 
 .loading {
@@ -206,6 +227,18 @@
 
   .activities-grid {
     grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  /* Single item centering on mobile */
+  .activities-grid:has(> :only-child) {
+    max-width: 400px;
+  }
+
+  /* Reset two items layout on mobile */
+  .activities-grid:has(> :nth-child(2):not(:nth-child(3))) {
+    grid-template-columns: 1fr;
+    max-width: 500px;
   }
 
   .tabs {
@@ -215,5 +248,36 @@
   .tab {
     padding: 10px 16px;
     font-size: 0.9rem;
+  }
+
+  .activity-card {
+    min-height: auto;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .activities-page {
+    padding: 40px 15px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .activities-grid {
+    gap: 20px;
+  }
+
+  .activity-card {
+    padding: 15px;
   }
 }

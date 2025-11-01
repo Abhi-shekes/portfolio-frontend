@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { heroAPI, sliderAPI } from "../../services/api"
 import EnhancedImage from "../common/EnhancedImage"
 import ImageSlider from "../common/ImageSlider"
+import remarkGfm from "remark-gfm"
+import ReactMarkdown from "react-markdown"
 
 const HeroSection = () => {
   const [heroData, setHeroData] = useState(null)
@@ -121,13 +123,16 @@ const HeroSection = () => {
             {heroData.tagline}
           </p>
 
-          {heroData.description && (
-            <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-4xl mx-auto leading-relaxed">
-              {heroData.description}
-            </p>
-          )}
+  
 
-          {/* Rest of your hero content remains the same */}
+            {heroData.description && (
+    <div className="text-lg md:text-xl text-gray-400 mb-12 max-w-4xl mx-auto leading-relaxed prose prose-invert">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {heroData.description}
+      </ReactMarkdown>
+    </div>
+  )}
+{/* 
           <div className="flex flex-col sm:flex-row justify-center gap-6 mb-16">
             {heroData.resumeUrl && (
               <a
@@ -167,7 +172,7 @@ const HeroSection = () => {
           </div>
 
           {/* Social links remain the same */}
-        </div>
+        </div> */
       </div>
     </section>
   )

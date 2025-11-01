@@ -1,5 +1,5 @@
 .publications-page {
-   min-height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
   color: #e2e8f0;
   padding: 60px 20px;
@@ -64,10 +64,22 @@
 
 .publications-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  justify-items: center;
+}
+
+/* Single item layout */
+.publications-grid:has(> :only-child) {
+  max-width: 550px;
+}
+
+/* Two items layout */
+.publications-grid:has(> :nth-child(2):not(:nth-child(3))) {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 850px;
 }
 
 .publication-card {
@@ -77,6 +89,12 @@
   padding: 25px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  height: fit-content;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .publication-card:hover {
@@ -126,6 +144,7 @@
   line-height: 1.6;
   color: #cbd5e1;
   font-size: 0.9rem;
+  flex-grow: 1;
 }
 
 .paper-links {
@@ -158,6 +177,7 @@
   color: #94a3b8;
   padding: 40px;
   font-size: 1.1rem;
+  grid-column: 1 / -1;
 }
 
 .loading {
@@ -205,6 +225,18 @@
 
   .publications-grid {
     grid-template-columns: 1fr;
+    max-width: 550px;
+  }
+
+  /* Single item centering on mobile */
+  .publications-grid:has(> :only-child) {
+    max-width: 450px;
+  }
+
+  /* Reset two items layout on mobile */
+  .publications-grid:has(> :nth-child(2):not(:nth-child(3))) {
+    grid-template-columns: 1fr;
+    max-width: 550px;
   }
 
   .tabs {
@@ -214,5 +246,40 @@
   .tab {
     padding: 10px 16px;
     font-size: 0.9rem;
+  }
+
+  .publication-card {
+    min-height: auto;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .publications-page {
+    padding: 40px 15px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .publications-grid {
+    gap: 20px;
+  }
+
+  .publication-card {
+    padding: 15px;
+  }
+
+  .publication-card h3 {
+    font-size: 1.1rem;
   }
 }

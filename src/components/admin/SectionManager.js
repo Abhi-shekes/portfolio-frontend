@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
+import MDEditor from '@uiw/react-md-editor'
 import ImageInput from "./ImageInput"
 import {
   heroAPI,
@@ -41,6 +42,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm()
 
@@ -79,7 +81,6 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
 
   const fetchData = async () => {
     try {
-      console.log("[v0] Fetching data for", sectionName)
       const response =
         sectionName === "hero" || sectionName === "about"
           ? await api.get()
@@ -88,7 +89,6 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             : await api.get()
 
       const responseData = response.data
-      console.log("[v0] Fetched data:", responseData)
 
       setData(Array.isArray(responseData) ? responseData : [responseData].filter(Boolean))
     } catch (error) {
@@ -101,7 +101,6 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
 
   const onSubmit = async (formData) => {
     try {
-      console.log("[v0] Form submission for", sectionName, ":", formData)
 
       if (sectionName === "hero" || sectionName === "about") {
         await api.update(formData)
@@ -150,6 +149,36 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
     }
   }
 
+  // Custom MarkdownEditor component that integrates with react-hook-form
+  const MarkdownEditor = ({ name, value, onChange, placeholder, error, height = 200 }) => {
+    return (
+      <div className="w-full" data-color-mode="light">
+        <MDEditor
+          value={value}
+          onChange={onChange}
+          preview="edit"
+          hideToolbar={false}
+          height={height}
+          placeholder={placeholder}
+          className={`rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+        />
+        {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
+      </div>
+    )
+  }
+
+  // Helper function to register Markdown fields with react-hook-form
+  const registerMarkdownField = (name, options = {}) => {
+    const fieldValue = watch(name)
+    return {
+      value: fieldValue || '',
+      onChange: (value) => {
+        setValue(name, value, { shouldValidate: true })
+      },
+      error: errors[name]
+    }
+  }
+
   const renderForm = () => {
     switch (sectionName) {
       case "hero":
@@ -165,12 +194,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Professional Tagline"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Professional description"
+              />
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
               <ImageInput
@@ -222,12 +252,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Section Title (default: About Me)"
               className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("content", { required: "Content is required" })}
-              placeholder="About content"
-              className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="6"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Content *</label>
+              <MarkdownEditor
+                {...registerMarkdownField("content", { required: "Content is required" })}
+                placeholder="About content (supports Markdown)"
+                height={300}
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">About Image</label>
               <ImageInput
@@ -272,23 +304,27 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Job Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Job description and responsibilities (supports Markdown)"
+                height={200}
+              />
+            </div>
             <input
               {...register("technologies")}
               placeholder="Technologies (comma-separated)"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("achievements")}
-              placeholder="Achievements (one per line)"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Achievements</label>
+              <MarkdownEditor
+                {...registerMarkdownField("achievements")}
+                placeholder="Key achievements (one per line, supports Markdown)"
+                height={150}
+              />
+            </div>
           </div>
         )
 
@@ -339,12 +375,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description/Achievements"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description/Achievements</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Description and achievements (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("coursework")}
               placeholder="Relevant Coursework (comma-separated)"
@@ -418,12 +456,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 setValue={setValue}
               />
             </div>
-            <textarea
-              {...register("description", { required: "Description is required" })}
-              placeholder="Project Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Project Description *</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description", { required: "Description is required" })}
+                placeholder="Project description, features, and technologies used (supports Markdown)"
+                height={250}
+              />
+            </div>
             <input
               {...register("technologies")}
               placeholder="Technologies (comma-separated)"
@@ -489,12 +529,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description of volunteer work"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description of volunteer work</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Description of volunteer work and impact (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("hoursPerWeek")}
               placeholder="Hours per Week"
@@ -542,12 +584,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Publication URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("abstract")}
-              placeholder="Abstract"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="4"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <MarkdownEditor
+                {...registerMarkdownField("abstract")}
+                placeholder="Publication abstract (supports Markdown)"
+                height={200}
+              />
+            </div>
             <input
               {...register("keywords")}
               placeholder="Keywords (comma-separated)"
@@ -615,12 +659,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               <option value="Granted">Granted</option>
               <option value="Expired">Expired</option>
             </select>
-            <textarea
-              {...register("abstract")}
-              placeholder="Patent Abstract"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="4"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Patent Abstract</label>
+              <MarkdownEditor
+                {...registerMarkdownField("abstract")}
+                placeholder="Patent abstract (supports Markdown)"
+                height={200}
+              />
+            </div>
             <input
               {...register("url")}
               placeholder="Patent URL/Certificate"
@@ -657,12 +703,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Level (e.g., National, Regional)"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Award Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Award Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Award description and significance (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("amount")}
               placeholder="Monetary Value (if applicable)"
@@ -710,12 +758,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("breakdown")}
-              placeholder="Score Breakdown (e.g., Verbal: 160, Quantitative: 170)"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="2"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Score Breakdown</label>
+              <MarkdownEditor
+                {...registerMarkdownField("breakdown")}
+                placeholder="Score breakdown (e.g., Verbal: 160, Quantitative: 170)"
+                height={100}
+              />
+            </div>
             <input
               {...register("certificateUrl")}
               placeholder="Certificate URL"
@@ -817,12 +867,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Credential URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Certification Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Certification Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Certification description and learning outcomes (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("skills")}
               placeholder="Skills Gained (comma-separated)"
@@ -864,12 +916,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Certificate URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Course Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Course Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Course description and curriculum (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("skills")}
               placeholder="Skills Learned (comma-separated)"
@@ -906,12 +960,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Location"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Talk Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Talk Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Talk description and key points (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("link")}
               placeholder="Talk Link/Recording URL"
@@ -943,12 +999,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Internship Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Internship Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Internship description and responsibilities (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("skills")}
               placeholder="Skills Gained (comma-separated)"
@@ -983,12 +1041,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Location"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Workshop Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Workshop Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Workshop description and agenda (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("organizer")}
               placeholder="Organizer/Conductor"
@@ -1003,7 +1063,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             <input
               {...register("title", { required: "Title is required" })}
               placeholder="Training Title"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:ring-blue-500"
             />
             <input
               {...register("provider", { required: "Provider is required" })}
@@ -1020,12 +1080,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Training Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Training Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Training description and curriculum (supports Markdown)"
+                height={150}
+              />
+            </div>
             <input
               {...register("certificateUrl")}
               placeholder="Certificate URL"
@@ -1052,12 +1114,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Appreciation description and context (supports Markdown)"
+                height={150}
+              />
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Image</label>
               <ImageInput
@@ -1103,12 +1167,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Paper URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("abstract")}
-              placeholder="Abstract"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <MarkdownEditor
+                {...registerMarkdownField("abstract")}
+                placeholder="Paper abstract (supports Markdown)"
+                height={200}
+              />
+            </div>
           </div>
         )
 
@@ -1135,12 +1201,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Paper URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Research paper description and findings (supports Markdown)"
+                height={150}
+              />
+            </div>
           </div>
         )
 
@@ -1177,12 +1245,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Paper URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("abstract")}
-              placeholder="Abstract"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <MarkdownEditor
+                {...registerMarkdownField("abstract")}
+                placeholder="Conference paper abstract (supports Markdown)"
+                height={200}
+              />
+            </div>
           </div>
         )
 
@@ -1219,12 +1289,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="ISBN"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <textarea
-              {...register("description")}
-              placeholder="Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Book chapter description and content (supports Markdown)"
+                height={150}
+              />
+            </div>
           </div>
         )
 
@@ -1245,12 +1317,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Image</label>
               <ImageInput register={register} name="image" placeholder="Image URL or upload file" setValue={setValue} />
             </div>
-            <textarea
-              {...register("description")}
-              placeholder="Image Description"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Image Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Image description and context (supports Markdown)"
+                height={150}
+              />
+            </div>
             <div className="flex items-center space-x-2">
               <input {...register("featured")} type="checkbox" className="rounded" />
               <label className="text-sm text-gray-700">Featured Image</label>

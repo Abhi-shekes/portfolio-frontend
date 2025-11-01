@@ -1,6 +1,8 @@
-
 import { useState, useEffect } from "react"
 import { experienceAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
+
 
 const ExperienceSection = () => {
   const [experiences, setExperiences] = useState([])
@@ -77,8 +79,13 @@ const ExperienceSection = () => {
                 </div>
               </div>
 
-              {experience.description && <p className="text-gray-700 mb-4 leading-relaxed">{experience.description}</p>}
-
+            {experience.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {experience.description}
+      </ReactMarkdown>
+    </div>
+  )}
               {experience.achievements && experience.achievements.length > 0 && (
                 <div className="mb-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Key Achievements:</h4>

@@ -1,8 +1,8 @@
-
-
 import { useState, useEffect } from "react"
 import { aboutAPI } from "../../services/api"
 import EnhancedImage from "../common/EnhancedImage"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm" // ✅ Enables bold, italic, lists, tables, etc.
 
 const AboutSection = () => {
   const [aboutData, setAboutData] = useState(null)
@@ -37,9 +37,7 @@ const AboutSection = () => {
     )
   }
 
-  if (!aboutData) {
-    return null
-  }
+  if (!aboutData) return null
 
   return (
     <section id="about" className="py-20 bg-white">
@@ -61,8 +59,11 @@ const AboutSection = () => {
           )}
 
           <div className={`order-1 ${aboutData.image ? "lg:order-2" : "lg:col-span-2"}`}>
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-700 leading-relaxed text-lg">{aboutData.content}</p>
+            {/* Markdown content renderer */}
+            <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {aboutData.content}
+              </ReactMarkdown>
             </div>
           </div>
         </div>

@@ -1,6 +1,8 @@
-
 import { useState, useEffect } from "react"
 import { certificationsAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
+
 
 const CertificationsSection = () => {
   const [certifications, setCertifications] = useState([])
@@ -99,7 +101,15 @@ const CertificationsSection = () => {
                 )}
               </div>
 
-              {cert.description && <p className="text-gray-700 mb-4 leading-relaxed">{cert.description}</p>}
+        
+
+               {cert.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {cert.description}
+      </ReactMarkdown>
+    </div>
+  )}
 
               {cert.url && (
                 <a

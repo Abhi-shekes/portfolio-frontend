@@ -1,8 +1,8 @@
-
-
 import { useState, useEffect } from "react"
 import { projectsAPI } from "../../services/api"
 import EnhancedImage from "../common/EnhancedImage"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
 
 const ProjectsSection = () => {
   const [projects, setProjects] = useState([])
@@ -86,7 +86,13 @@ const ProjectsSection = () => {
                   )}
                 </div>
 
-                <p className="text-gray-700 mb-4 leading-relaxed">{project.description}</p>
+          
+
+                  <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      {project.description}
+    </ReactMarkdown>
+  </div>
 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="mb-4">

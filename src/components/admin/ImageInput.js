@@ -38,7 +38,6 @@ const ImageInput = ({
       const reader = new FileReader()
       reader.onload = (e) => {
         const base64 = e.target.result
-        console.log("[v0] File converted to base64, size:", base64.length)
         setPreview(base64)
 
         if (setValue) {
@@ -54,7 +53,6 @@ const ImageInput = ({
 
   const handleUrlChange = (event) => {
     const url = event.target.value
-    console.log("[v0] URL changed:", url)
     setPreview(url)
 
     if (setValue) {
@@ -66,7 +64,6 @@ const ImageInput = ({
   }
 
   const clearImage = () => {
-    console.log("[v0] Clearing image")
     setPreview("")
 
     if (setValue) {
@@ -135,7 +132,6 @@ const ImageInput = ({
             alt="Preview"
             className="w-32 h-32 object-cover rounded border"
             onError={() => {
-              console.log("[v0] Image load error")
               setPreview("")
               toast.error("Failed to load image")
             }}

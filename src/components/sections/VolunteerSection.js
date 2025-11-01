@@ -1,6 +1,7 @@
-
 import { useState, useEffect } from "react"
 import { volunteerAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
 
 const VolunteerSection = () => {
   const [volunteer, setVolunteer] = useState([])
@@ -75,7 +76,14 @@ const VolunteerSection = () => {
                 </div>
               </div>
 
-              {vol.description && <p className="text-gray-700 mb-4 leading-relaxed">{vol.description}</p>}
+           
+                {vol.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {vol.description}
+      </ReactMarkdown>
+    </div>
+  )}
 
               {vol.achievements && vol.achievements.length > 0 && (
                 <div>

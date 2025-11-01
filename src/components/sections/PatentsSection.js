@@ -1,6 +1,8 @@
-
 import { useState, useEffect } from "react"
 import { patentsAPI } from "../../services/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm"
+
 
 const PatentsSection = () => {
   const [patents, setPatents] = useState([])
@@ -114,7 +116,14 @@ const PatentsSection = () => {
                 )}
               </div>
 
-              {patent.description && <p className="text-gray-700 mb-4 leading-relaxed">{patent.description}</p>}
+
+               {patent.description && (
+    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {patent.description}
+      </ReactMarkdown>
+    </div>
+  )}
 
               {patent.url && (
                 <a
