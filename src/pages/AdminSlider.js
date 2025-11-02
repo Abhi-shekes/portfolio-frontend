@@ -17,8 +17,11 @@ const AdminSlider = () => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm()
+
+  const imageValue = watch("image")
 
   useEffect(() => {
     fetchSliderImages()
@@ -28,7 +31,6 @@ const AdminSlider = () => {
     try {
       setLoading(true)
       const response = await sliderAPI.getAll()
-      // Handle the response structure correctly
       const sliderData = response.data || response
       setSliderImages(sliderData.images || [])
     } catch (error) {
@@ -40,41 +42,37 @@ const AdminSlider = () => {
     }
   }
 
-const onSubmit = async (formData) => {
-  try {
-    const imageData = {
-      url: formData.image,
-      title: formData.title,
-      description: formData.description,
-    }
+  const onSubmit = async (formData) => {
+    try {
+      const imageData = {
+        url: formData.image,
+        title: formData.title,
+        description: formData.description,
+      }
 
-    if (editingItem) {
-      await sliderAPI.updateImage(editingItem._id, imageData)
-      toast.success("Slider image updated successfully")
-    } else {
-      await sliderAPI.addImage(imageData)
-      toast.success("Slider image added successfully")
-    }
+      if (editingItem) {
+        await sliderAPI.updateImage(editingItem._id, imageData)
+        toast.success("Slider image updated successfully")
+      } else {
+        await sliderAPI.addImage(imageData)
+        toast.success("Slider image added successfully")
+      }
 
-    await fetchSliderImages()
-    setShowForm(false)
-    setEditingItem(null)
-    reset()
-  } catch (error) {
-    console.error("Error saving slider image:", error)
-    toast.error(`Failed to save slider image: ${error.response?.data?.message || error.message}`)
+      await fetchSliderImages()
+      setShowForm(false)
+      setEditingItem(null)
+      reset()
+    } catch (error) {
+      console.error("Error saving slider image:", error)
+      toast.error(`Failed to save slider image: ${error.response?.data?.message || error.message}`)
+    }
   }
-}
 
   const handleEdit = (item) => {
     setEditingItem(item)
-    // Map the backend fields to form fields
-    reset({
-      title: item.title,
-      image: item.url, // Map 'url' to 'image' field
-      description: item.description,
-      // featured and order fields would go here if supported
-    })
+    setValue("title", item.title)
+    setValue("image", item.url)
+    setValue("description", item.description)
     setShowForm(true)
   }
 
@@ -129,45 +127,35 @@ const onSubmit = async (formData) => {
               <h3 className="text-lg font-medium mb-4">{editingItem ? "Edit Slider Image" : "Add Slider Image"}</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  {...register("title", { required: "Title is required" })}
-                  placeholder="Image Title"
-                  className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Image URL *</label>
-                  <input
-                    {...register("image", { required: "Image URL is required" })}
-                    placeholder="Enter image URL"
-                    className="w-full border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  {/* You can keep ImageInput if you have it, but make sure it sets the 'image' field */}
-                  {/* <ImageInput
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Image (URL or Upload) *
+                  </label>
+                  <ImageInput
                     register={register}
                     name="image"
                     placeholder="Image URL or upload file"
                     setValue={setValue}
-                  /> */}
+                    value={imageValue}
+                    onChange={(value) => setValue("image", value)}
+                  />
+                  {errors.image && (
+                    <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
+                  )}
                 </div>
+
+                <input
+                  {...register("title", { required: "Title is required" })}
+                  placeholder="Image Title *"
+                  className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                
                 <textarea
                   {...register("description")}
                   placeholder="Image Description (optional)"
                   className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   rows="3"
                 />
-                {/* Remove featured and order fields since they're not supported in current backend */}
-                {/* <div className="flex items-center space-x-2">
-                  <input {...register("featured")} type="checkbox" className="rounded" />
-                  <label className="text-sm text-gray-700">Featured Slider</label>
-                </div>
-                <input
-                  {...register("order", { valueAsNumber: true })}
-                  placeholder="Display Order (1-10)"
-                  type="number"
-                  min="1"
-                  max="10"
-                  className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                /> */}
               </div>
 
               <div className="flex justify-end space-x-4 mt-6">
@@ -182,7 +170,11 @@ const onSubmit = async (formData) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  disabled={!imageValue}
+                >
                   {editingItem ? "Update" : "Create"}
                 </button>
               </div>
@@ -208,7 +200,6 @@ const onSubmit = async (formData) => {
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
                         <div className="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <p className="font-semibold">{image.title}</p>
-                          {/* Remove featured display since it's not supported */}
                         </div>
                       </div>
                     </div>
@@ -225,10 +216,9 @@ const onSubmit = async (formData) => {
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900">{image.title}</h4>
                           <p className="text-gray-600 text-sm">{image.description}</p>
-                          <div className="flex gap-2 mt-2">
-                            {/* Remove featured badge since it's not supported */}
+                          <div className="mt-2">
                             <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                              Order: {image.order || "-"}
+                              {image.url.startsWith('data:image/') ? 'Uploaded Image' : 'URL Image'}
                             </span>
                           </div>
                         </div>

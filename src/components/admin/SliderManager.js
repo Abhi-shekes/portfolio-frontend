@@ -3,16 +3,16 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
-import { sliderAPI } from "../../services/api" // Import the API
-
-
-
+import { sliderAPI } from "../../services/api"
+import ImageInput from "./ImageInput" // Make sure this path is correct
 
 const SliderManager = () => {
   const [images, setImages] = useState([])
   const [loading, setLoading] = useState(true)
   const [isEnabled, setIsEnabled] = useState(false)
-  const { register, handleSubmit, reset, setValue } = useForm()
+  const { register, handleSubmit, reset, setValue, watch } = useForm()
+
+  const imageUrlValue = watch("imageUrl")
 
   useEffect(() => {
     fetchSliderData()
@@ -21,7 +21,6 @@ const SliderManager = () => {
   const fetchSliderData = async () => {
     try {
       const response = await sliderAPI.getAll()
-      // Handle different response structures
       const sliderData = response.data || response
       setImages(sliderData.images || [])
       setIsEnabled(sliderData.isEnabled || false)
@@ -40,7 +39,6 @@ const SliderManager = () => {
         description: data.imageDescription,
       })
 
-      // Handle response properly
       const updatedData = response.data || response
       setImages(updatedData.images || [])
       reset()
@@ -53,8 +51,6 @@ const SliderManager = () => {
   const deleteImage = async (imageId) => {
     try {
       const response = await sliderAPI.deleteImage(imageId)
-      
-      // Handle response properly
       const updatedData = response.data || response
       setImages(updatedData.images || [])
       toast.success("Image deleted successfully")
@@ -66,8 +62,6 @@ const SliderManager = () => {
   const toggleSlider = async () => {
     try {
       const response = await sliderAPI.toggle()
-      
-      // Handle response properly
       const updatedData = response.data || response
       setIsEnabled(updatedData.isEnabled)
       toast.success(updatedData.isEnabled ? "Slider enabled" : "Slider disabled")
@@ -77,7 +71,6 @@ const SliderManager = () => {
     }
   }
 
-  // Update ImageInput usage
   const handleImageSelect = (imageUrl) => {
     setValue("imageUrl", imageUrl)
   }
@@ -92,7 +85,7 @@ const SliderManager = () => {
 
   return (
     <div className="space-y-8">
-      {/* Toggle Section - Fixed UI */}
+      {/* Toggle Section */}
       <div className="bg-white/5 border border-white/10 rounded-lg p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -129,15 +122,15 @@ const SliderManager = () => {
         <h3 className="text-xl font-semibold text-white mb-6">Add New Image</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-gray-300 font-medium mb-2">Image URL</label>
-            <input
-              type="text"
-              {...register("imageUrl", { required: "Image URL is required" })}
+            <label className="block text-gray-300 font-medium mb-2">Image (URL or Upload)</label>
+            <ImageInput
+              register={register}
+              name="imageUrl"
               placeholder="Enter image URL or upload below"
-              className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              setValue={setValue}
+              value={imageUrlValue}
+              onChange={handleImageSelect}
             />
-            {/* Optional: Add ImageInput component if you have it */}
-            {/* <ImageInput onImageSelect={handleImageSelect} /> */}
           </div>
 
           <div>
@@ -162,7 +155,8 @@ const SliderManager = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-all disabled:opacity-50"
+            disabled={!imageUrlValue}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Add Image to Slider
           </button>
@@ -192,6 +186,9 @@ const SliderManager = () => {
                   />
                   <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                     #{index + 1}
+                  </div>
+                  <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                    {image.url.startsWith('data:image/') ? 'Uploaded' : 'URL'}
                   </div>
                 </div>
                 
