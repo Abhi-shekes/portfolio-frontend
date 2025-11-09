@@ -1,8 +1,8 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { projectsAPI } from "../../services/api"
 import EnhancedImage from "../common/EnhancedImage"
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from "remark-gfm"
 
 const ProjectsSection = () => {
   const [projects, setProjects] = useState([])
@@ -22,6 +22,25 @@ const ProjectsSection = () => {
 
     fetchProjects()
   }, [])
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow max-w-2xl w-full"
+    }
+    return "bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+  }
 
   if (loading) {
     return (
@@ -59,12 +78,9 @@ const ProjectsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Projects</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={getLayoutClass(projects.length)}>
           {projects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-            >
+            <div key={project._id} className={getItemClass(projects.length)}>
               {project.image && (
                 <div className="h-48 overflow-hidden">
                   <EnhancedImage
@@ -86,13 +102,7 @@ const ProjectsSection = () => {
                   )}
                 </div>
 
-          
-
-                  <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
-    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-      {project.description}
-    </ReactMarkdown>
-  </div>
+                <p className="text-gray-700 mb-4 leading-relaxed">{project.description}</p>
 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="mb-4">

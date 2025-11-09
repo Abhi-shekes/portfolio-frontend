@@ -1,8 +1,10 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { certificationsAPI } from "../../services/api"
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-
+import ImageGallery from "../common/ImageGallery"
 
 const CertificationsSection = () => {
   const [certifications, setCertifications] = useState([])
@@ -32,6 +34,25 @@ const CertificationsSection = () => {
   const isExpired = (expiryDate) => {
     if (!expiryDate) return false
     return new Date(expiryDate) < new Date()
+  }
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-white rounded-lg shadow-md p-6 max-w-3xl w-full"
+    }
+    return "bg-white rounded-lg shadow-md p-6"
   }
 
   if (loading) {
@@ -66,9 +87,9 @@ const CertificationsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Licenses & Certifications</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className={getLayoutClass(certifications.length)}>
           {certifications.map((cert) => (
-            <div key={cert._id} className="bg-white rounded-lg shadow-md p-6">
+            <div key={cert._id} className={getItemClass(certifications.length)}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{cert.name}</h3>
@@ -101,15 +122,17 @@ const CertificationsSection = () => {
                 )}
               </div>
 
-        
+              {cert.description && (
+                <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{cert.description}</ReactMarkdown>
+                </div>
+              )}
 
-               {cert.description && (
-    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {cert.description}
-      </ReactMarkdown>
-    </div>
-  )}
+              {cert.images && cert.images.length > 0 && (
+                <div className="mb-4">
+                  <ImageGallery images={cert.images} />
+                </div>
+              )}
 
               {cert.url && (
                 <a

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
-import MDEditor from '@uiw/react-md-editor'
+import MDEditor from "@uiw/react-md-editor"
 import ImageInput from "./ImageInput"
+import MultiImageUploader from "../common/MultiImageUploader"
 import {
   heroAPI,
   aboutAPI,
@@ -37,6 +38,8 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
   const [loading, setLoading] = useState(true)
   const [editingItem, setEditingItem] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [images, setImages] = useState([])
+
   const {
     register,
     handleSubmit,
@@ -101,21 +104,50 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
 
   const onSubmit = async (formData) => {
     try {
+      const sectionsWithImages = [
+        "volunteer",
+        "education",
+        "talks",
+        "internships",
+        "workshops",
+        "trainings",
+        "appreciations",
+        "awards",
+        "journalpapers",
+        "publications",
+        "researchpapers",
+        "conferencepapers",
+        "bookchapters",
+        "patents",
+        "testscores",
+        "certifications",
+        "courses",
+      ]
+
+      // Check if the current section handles images and if there are images to upload
+      if (sectionsWithImages.includes(sectionName) && images.length > 0) {
+        // Attach images to the form data if they exist
+        formData.images = images
+      }
 
       if (sectionName === "hero" || sectionName === "about") {
         await api.update(formData)
         toast.success(`${sectionLabel} updated successfully`)
       } else if (editingItem) {
+        // Update existing item
         if (api.update) {
           await api.update(editingItem._id, formData)
         } else {
+          // Fallback if update method expects only data
           await api.update(formData)
         }
         toast.success(`${sectionLabel} updated successfully`)
       } else {
+        // Create new item
         if (api.create) {
           await api.create(formData)
         } else {
+          // Fallback if create method is not defined, assume update is used for creation too
           await api.update(formData)
         }
         toast.success(`${sectionLabel} created successfully`)
@@ -125,6 +157,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
       setShowForm(false)
       setEditingItem(null)
       reset()
+      setImages([])
     } catch (error) {
       console.error("[v0] Form submission error:", error)
       toast.error(`Failed to save ${sectionLabel.toLowerCase()}: ${error.response?.data?.message || error.message}`)
@@ -135,6 +168,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
     setEditingItem(item)
     reset(item)
     setShowForm(true)
+    if (item.images && Array.isArray(item.images)) {
+      setImages(item.images)
+    } else {
+      setImages([])
+    }
   }
 
   const handleDelete = async (id) => {
@@ -160,7 +198,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
           hideToolbar={false}
           height={height}
           placeholder={placeholder}
-          className={`rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+          className={`rounded-md border ${error ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
         />
         {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
       </div>
@@ -171,11 +209,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
   const registerMarkdownField = (name, options = {}) => {
     const fieldValue = watch(name)
     return {
-      value: fieldValue || '',
+      value: fieldValue || "",
       onChange: (value) => {
         setValue(name, value, { shouldValidate: true })
       },
-      error: errors[name]
+      error: errors[name],
     }
   }
 
@@ -196,10 +234,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <MarkdownEditor
-                {...registerMarkdownField("description")}
-                placeholder="Professional description"
-              />
+              <MarkdownEditor {...registerMarkdownField("description")} placeholder="Professional description" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
@@ -388,6 +423,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Relevant Coursework (comma-separated)"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Education Images (certificates, transcripts, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -505,18 +547,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("position", { required: "Position is required" })}
-              placeholder="Volunteer Position"
+              {...register("role", { required: "Role is required" })}
+              placeholder="Volunteer Role"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("location")}
               placeholder="Location"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("cause")}
-              placeholder="Cause/Category"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
@@ -529,6 +566,10 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div className="flex items-center space-x-2">
+              <input {...register("current")} type="checkbox" className="rounded" />
+              <label className="text-sm text-gray-700">Currently Volunteering</label>
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Description of volunteer work</label>
               <MarkdownEditor
@@ -537,17 +578,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 height={150}
               />
             </div>
-            <input
-              {...register("hoursPerWeek")}
-              placeholder="Hours per Week"
-              type="number"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("website")}
-              placeholder="Organization Website"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Volunteer Images (photos, certificates, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -592,22 +629,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 height={200}
               />
             </div>
-            <input
-              {...register("keywords")}
-              placeholder="Keywords (comma-separated)"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <select
-              {...register("type")}
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Publication Type</option>
-              <option value="Journal Article">Journal Article</option>
-              <option value="Conference Paper">Conference Paper</option>
-              <option value="Book Chapter">Book Chapter</option>
-              <option value="Thesis">Thesis</option>
-              <option value="Other">Other</option>
-            </select>
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Publication Images (cover page, figures, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -620,7 +648,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("patentNumber")}
+              {...register("patentNumber", { required: "Patent number is required" })}
               placeholder="Patent Number"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -637,46 +665,45 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             <input
               {...register("filingDate")}
               type="date"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("publicationDate")}
-              type="date"
+              placeholder="Filing Date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("grantDate")}
               type="date"
+              placeholder="Grant Date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <select
               {...register("status")}
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">Patent Status</option>
+              <option value="">Select Status</option>
               <option value="Filed">Filed</option>
-              <option value="Published">Published</option>
+              <option value="Pending">Pending</option>
               <option value="Granted">Granted</option>
               <option value="Expired">Expired</option>
             </select>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Patent Abstract</label>
-              <MarkdownEditor
-                {...registerMarkdownField("abstract")}
-                placeholder="Patent abstract (supports Markdown)"
-                height={200}
-              />
-            </div>
             <input
               {...register("url")}
-              placeholder="Patent URL/Certificate"
+              placeholder="Patent URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <input
-              {...register("field")}
-              placeholder="Technical Field"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <MarkdownEditor
+                {...registerMarkdownField("description")}
+                placeholder="Patent description (supports Markdown)"
+                height={150}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Patent Images (certificate, diagrams, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -689,18 +716,18 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("issuer")}
+              {...register("issuer", { required: "Issuer is required" })}
               placeholder="Issuing Organization"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("date")}
+              {...register("date", { required: "Date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("level")}
-              placeholder="Level (e.g., National, Regional)"
+              {...register("url")}
+              placeholder="Award URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
@@ -711,16 +738,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 height={150}
               />
             </div>
-            <input
-              {...register("amount")}
-              placeholder="Monetary Value (if applicable)"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("url")}
-              placeholder="Award URL/Certificate"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Award Images (certificate, trophy, ceremony photos, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -733,7 +757,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("score")}
+              {...register("score", { required: "Score is required" })}
               placeholder="Score"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -743,34 +767,25 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("percentile")}
-              placeholder="Percentile"
-              type="number"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("testDate")}
-              type="date"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("validUntil")}
+              {...register("date", { required: "Date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Score Breakdown</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
               <MarkdownEditor
-                {...registerMarkdownField("breakdown")}
-                placeholder="Score breakdown (e.g., Verbal: 160, Quantitative: 170)"
+                {...registerMarkdownField("description")}
+                placeholder="Test score details (supports Markdown)"
                 height={100}
               />
             </div>
-            <input
-              {...register("certificateUrl")}
-              placeholder="Certificate URL"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Test Score Images (score report, certificate, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -843,18 +858,19 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("issuer")}
+              {...register("issuer", { required: "Issuer is required" })}
               placeholder="Issuing Organization"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("issueDate")}
+              {...register("issueDate", { required: "Issue date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("expiryDate")}
               type="date"
+              placeholder="Expiry Date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
@@ -863,7 +879,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("credentialUrl")}
+              {...register("url")}
               placeholder="Credential URL"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -875,11 +891,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 height={150}
               />
             </div>
-            <input
-              {...register("skills")}
-              placeholder="Skills Gained (comma-separated)"
-              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Certification Images (certificate, badge, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -887,28 +905,18 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
-              {...register("title", { required: "Course title is required" })}
-              placeholder="Course Title"
+              {...register("name", { required: "Course name is required" })}
+              placeholder="Course Name"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("provider")}
+              {...register("provider", { required: "Provider is required" })}
               placeholder="Course Provider"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("instructor")}
-              placeholder="Instructor Name"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("completionDate")}
+              {...register("completionDate", { required: "Completion date is required" })}
               type="date"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              {...register("duration")}
-              placeholder="Duration (e.g., 40 hours)"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
@@ -929,11 +937,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Skills Learned (comma-separated)"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <input
-              {...register("grade")}
-              placeholder="Grade/Score"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Course Images (certificate, materials, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -969,10 +979,17 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <input
-              {...register("link")}
+              {...register("url")}
               placeholder="Talk Link/Recording URL"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Talk Images (slides, photos, posters, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -999,6 +1016,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <input
+              {...register("location")}
+              placeholder="Location"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Internship Description</label>
               <MarkdownEditor
@@ -1012,6 +1034,13 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Skills Gained (comma-separated)"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Internship Images (certificate, work samples, team photos, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -1032,6 +1061,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               <option value="conducted">Conducted</option>
             </select>
             <input
+              {...register("organizer", { required: "Organizer is required" })}
+              placeholder="Organizer Name"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
               {...register("date", { required: "Date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -1039,6 +1073,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             <input
               {...register("location")}
               placeholder="Location"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("duration")}
+              placeholder="Duration (e.g., 2 days)"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
@@ -1050,10 +1089,17 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <input
-              {...register("organizer")}
-              placeholder="Organizer/Conductor"
+              {...register("certificate")}
+              placeholder="Certificate URL"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Workshop Images (certificate, photos, materials, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -1063,7 +1109,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             <input
               {...register("title", { required: "Title is required" })}
               placeholder="Training Title"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:ring-blue-500"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("provider", { required: "Provider is required" })}
@@ -1080,6 +1126,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <input
+              {...register("duration")}
+              placeholder="Duration (e.g., 40 hours)"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Training Description</label>
               <MarkdownEditor
@@ -1089,10 +1140,22 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <input
-              {...register("certificateUrl")}
+              {...register("certificate")}
               placeholder="Certificate URL"
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <input
+              {...register("skills")}
+              placeholder="Skills Learned (comma-separated)"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Training Images (certificate, materials, etc.)"
+              />
+            </div>
           </div>
         )
 
@@ -1105,13 +1168,18 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("issuer", { required: "Issuer is required" })}
-              placeholder="Issuing Organization"
+              {...register("awardedBy", { required: "Awarded by is required" })}
+              placeholder="Awarded By"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("date", { required: "Date is required" })}
               type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("category")}
+              placeholder="Category"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
@@ -1122,13 +1190,16 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 height={150}
               />
             </div>
+            <input
+              {...register("certificate")}
+              placeholder="Certificate URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Image</label>
-              <ImageInput
-                register={register}
-                name="certificateImage"
-                placeholder="Certificate image URL or upload file"
-                setValue={setValue}
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Appreciation Images (certificate, award, ceremony photos, etc.)"
               />
             </div>
           </div>
@@ -1153,8 +1224,23 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("publicationDate", { required: "Publication date is required" })}
+              {...register("publishDate", { required: "Publish date is required" })}
               type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("volume")}
+              placeholder="Volume"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("issue")}
+              placeholder="Issue"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("pages")}
+              placeholder="Pages"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
@@ -1165,7 +1251,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             <input
               {...register("url")}
               placeholder="Paper URL"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
@@ -1173,6 +1259,18 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 {...registerMarkdownField("abstract")}
                 placeholder="Paper abstract (supports Markdown)"
                 height={200}
+              />
+            </div>
+            <input
+              {...register("pdf")}
+              placeholder="PDF URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Journal Paper Images (cover, figures, graphs, etc.)"
               />
             </div>
           </div>
@@ -1192,21 +1290,43 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("publicationDate", { required: "Publication date is required" })}
+              {...register("publishDate", { required: "Publish date is required" })}
               type="date"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("doi")}
+              placeholder="DOI"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               {...register("url")}
               placeholder="Paper URL"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description/Abstract</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Research paper description and findings (supports Markdown)"
-                height={150}
+                height={200}
+              />
+            </div>
+            <input
+              {...register("pdf")}
+              placeholder="PDF URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("keywords")}
+              placeholder="Keywords (comma-separated)"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Research Paper Images (figures, charts, diagrams, etc.)"
               />
             </div>
           </div>
@@ -1231,7 +1351,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("publicationDate", { required: "Publication date is required" })}
+              {...register("conferenceDate", { required: "Conference date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -1241,9 +1361,14 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
+              {...register("doi")}
+              placeholder="DOI"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
               {...register("url")}
               placeholder="Paper URL"
-              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
@@ -1251,6 +1376,23 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 {...registerMarkdownField("abstract")}
                 placeholder="Conference paper abstract (supports Markdown)"
                 height={200}
+              />
+            </div>
+            <input
+              {...register("pdf")}
+              placeholder="PDF URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("proceedings")}
+              placeholder="Proceedings"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Conference Paper Images (presentation slides, poster, photos, etc.)"
               />
             </div>
           </div>
@@ -1275,12 +1417,22 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("publisher")}
+              {...register("publisher", { required: "Publisher is required" })}
               placeholder="Publisher"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
-              {...register("publicationDate", { required: "Publication date is required" })}
+              {...register("chapterNumber")}
+              placeholder="Chapter Number"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("pages")}
+              placeholder="Pages"
+              className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <input
+              {...register("publishDate", { required: "Publish date is required" })}
               type="date"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -1289,12 +1441,29 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="ISBN"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            <input
+              {...register("url")}
+              placeholder="URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract/Description</label>
               <MarkdownEditor
-                {...registerMarkdownField("description")}
+                {...registerMarkdownField("abstract")}
                 placeholder="Book chapter description and content (supports Markdown)"
-                height={150}
+                height={200}
+              />
+            </div>
+            <input
+              {...register("pdf")}
+              placeholder="PDF URL"
+              className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <div className="md:col-span-2">
+              <MultiImageUploader
+                images={images}
+                onChange={setImages}
+                label="Book Chapter Images (cover, diagrams, illustrations, etc.)"
               />
             </div>
           </div>
@@ -1313,9 +1482,17 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               placeholder="Category"
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            {/* Using MultiImageUploader for gallery images */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Image</label>
-              <ImageInput register={register} name="image" placeholder="Image URL or upload file" setValue={setValue} />
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Images</label>
+              <MultiImageUploader
+                images={images}
+                setImages={setImages}
+                register={register}
+                setValue={setValue}
+                name="images"
+                placeholder="Upload images for the gallery"
+              />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Image Description</label>
@@ -1540,6 +1717,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             setShowForm(!showForm)
             setEditingItem(null)
             reset()
+            setImages([]) // Clear images when cancelling form
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
         >
@@ -1560,6 +1738,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 setShowForm(false)
                 setEditingItem(null)
                 reset()
+                setImages([]) // Clear images when cancelling form
               }}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >

@@ -5,6 +5,7 @@ import Navigation from "../components/Navigation"
 import { api } from "../services/api"
 import toast from "react-hot-toast"
 import "../styles/PublicationsPage.css"
+import ImageGallery from "../components/common/ImageGallery"
 
 export default function PublicationsPage() {
   const [journalPapers, setJournalPapers] = useState([])
@@ -84,6 +85,12 @@ export default function PublicationsPage() {
           </a>
         )}
       </div>
+      {paper.images && paper.images.length > 0 && (
+        <div className="mt-4">
+          <h4 className="font-semibold mb-2">Images:</h4>
+          <ImageGallery images={paper.images} />
+        </div>
+      )}
     </div>
   )
 

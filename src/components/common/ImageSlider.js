@@ -66,7 +66,8 @@ const ImageSlider = ({ images = [], autoRotate = true, rotationInterval = 5000, 
                 <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                   <span className="text-white">No image URL provided</span>
                 </div>
-              )}
+              )
+              }
               
             
             </div>

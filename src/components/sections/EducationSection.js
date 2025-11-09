@@ -1,8 +1,10 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { educationAPI } from "../../services/api"
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-
+import ImageGallery from "../common/ImageGallery"
 
 const EducationSection = () => {
   const [education, setEducation] = useState([])
@@ -27,6 +29,25 @@ const EducationSection = () => {
     if (!dateString) return ""
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", { year: "numeric", month: "long" })
+  }
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-gray-50 rounded-lg p-6 md:p-8 max-w-4xl w-full"
+    }
+    return "bg-gray-50 rounded-lg p-6 md:p-8"
   }
 
   if (loading) {
@@ -61,9 +82,9 @@ const EducationSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Education</h2>
         </div>
 
-        <div className="space-y-8">
+        <div className={getLayoutClass(education.length)}>
           {education.map((edu) => (
-            <div key={edu._id} className="bg-gray-50 rounded-lg p-6 md:p-8">
+            <div key={edu._id} className={getItemClass(education.length)}>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{edu.degree}</h3>
@@ -80,15 +101,13 @@ const EducationSection = () => {
               </div>
 
               {edu.description && (
-    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {edu.description}
-      </ReactMarkdown>
-    </div>
-  )}
+                <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{edu.description}</ReactMarkdown>
+                </div>
+              )}
 
               {edu.achievements && edu.achievements.length > 0 && (
-                <div>
+                <div className="mb-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Achievements:</h4>
                   <ul className="list-disc list-inside space-y-1">
                     {edu.achievements.map((achievement, index) => (
@@ -97,6 +116,13 @@ const EducationSection = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {edu.images && edu.images.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="font-semibold text-gray-900 mb-3">Images:</h4>
+                  <ImageGallery images={edu.images} />
                 </div>
               )}
             </div>

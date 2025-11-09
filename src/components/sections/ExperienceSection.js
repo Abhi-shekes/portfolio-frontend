@@ -1,8 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { experienceAPI } from "../../services/api"
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-
 
 const ExperienceSection = () => {
   const [experiences, setExperiences] = useState([])
@@ -27,6 +28,25 @@ const ExperienceSection = () => {
     if (!dateString) return ""
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", { year: "numeric", month: "long" })
+  }
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl w-full"
+    }
+    return "bg-white rounded-lg shadow-md p-6 md:p-8"
   }
 
   if (loading) {
@@ -62,9 +82,9 @@ const ExperienceSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Experience</h2>
         </div>
 
-        <div className="space-y-8">
+        <div className={getLayoutClass(experiences.length)}>
           {experiences.map((experience) => (
-            <div key={experience._id} className="bg-white rounded-lg shadow-md p-6 md:p-8">
+            <div key={experience._id} className={getItemClass(experiences.length)}>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{experience.position}</h3>
@@ -79,13 +99,11 @@ const ExperienceSection = () => {
                 </div>
               </div>
 
-            {experience.description && (
-    <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {experience.description}
-      </ReactMarkdown>
-    </div>
-  )}
+              {experience.description && (
+                <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{experience.description}</ReactMarkdown>
+                </div>
+              )}
               {experience.achievements && experience.achievements.length > 0 && (
                 <div className="mb-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Key Achievements:</h4>

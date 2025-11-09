@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Navigation from "../components/Navigation"
 import { api } from "../services/api"
 import toast from "react-hot-toast"
+import ImageGallery from "../components/common/ImageGallery"
 import "../styles/ActivitiesPage.css"
 
 export default function ActivitiesPage() {
@@ -60,6 +61,12 @@ export default function ActivitiesPage() {
                 View Talk
               </a>
             )}
+            {talk.images && talk.images.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Images:</h4>
+                <ImageGallery images={talk.images} />
+              </div>
+            )}
           </div>
         ))
       )}
@@ -90,6 +97,12 @@ export default function ActivitiesPage() {
                 ))}
               </div>
             )}
+            {internship.images && internship.images.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Images:</h4>
+                <ImageGallery images={internship.images} />
+              </div>
+            )}
           </div>
         ))
       )}
@@ -110,6 +123,12 @@ export default function ActivitiesPage() {
             {workshop.location && <p className="location">{workshop.location}</p>}
             {workshop.duration && <p className="duration">Duration: {workshop.duration}</p>}
             {workshop.description && <p className="description">{workshop.description}</p>}
+            {workshop.images && workshop.images.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Images:</h4>
+                <ImageGallery images={workshop.images} />
+              </div>
+            )}
           </div>
         ))
       )}
@@ -140,6 +159,12 @@ export default function ActivitiesPage() {
                 ))}
               </div>
             )}
+            {training.images && training.images.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Images:</h4>
+                <ImageGallery images={training.images} />
+              </div>
+            )}
           </div>
         ))
       )}
@@ -158,6 +183,12 @@ export default function ActivitiesPage() {
             <p className="date">{new Date(appreciation.date).toLocaleDateString()}</p>
             {appreciation.category && <p className="category">{appreciation.category}</p>}
             {appreciation.description && <p className="description">{appreciation.description}</p>}
+            {appreciation.images && appreciation.images.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-2">Images:</h4>
+                <ImageGallery images={appreciation.images} />
+              </div>
+            )}
           </div>
         ))
       )}

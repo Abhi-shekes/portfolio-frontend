@@ -1,7 +1,8 @@
+"use client"
 
 import { useState, useEffect } from "react"
 import { testScoresAPI } from "../../services/api"
-import remarkGfm from "remark-gfm"
+import ImageGallery from "../common/ImageGallery"
 
 const TestScoresSection = () => {
   const [testScores, setTestScores] = useState([])
@@ -26,6 +27,25 @@ const TestScoresSection = () => {
     if (!dateString) return ""
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", { year: "numeric", month: "long" })
+  }
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-white rounded-lg shadow-md p-6 max-w-2xl w-full"
+    }
+    return "bg-white rounded-lg shadow-md p-6"
   }
 
   if (loading) {
@@ -60,26 +80,27 @@ const TestScoresSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Test Scores</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={getLayoutClass(testScores.length)}>
           {testScores.map((test) => (
-            <div key={test._id} className="bg-white rounded-lg shadow-md p-6 text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{test.testName}</h3>
+            <div key={test._id} className={getItemClass(testScores.length)}>
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{test.testName}</h3>
 
-              <div className="mb-4">
-                <span className="text-3xl font-bold text-blue-600">{test.score}</span>
-                {test.maxScore && <span className="text-gray-600 ml-1">/ {test.maxScore}</span>}
+                <div className="mb-4">
+                  <span className="text-3xl font-bold text-blue-600">{test.score}</span>
+                  {test.maxScore && <span className="text-gray-600 ml-1">/ {test.maxScore}</span>}
+                </div>
+
+                <p className="text-gray-600 mb-4">{formatDate(test.date)}</p>
+
+                {test.description && <p className="text-gray-700 text-sm leading-relaxed mb-4">{test.description}</p>}
               </div>
 
-              <p className="text-gray-600 mb-4">{formatDate(test.date)}</p>
-
-  {test.description && (
-    <div className="text-gray-700 text-sm leading-relaxed prose prose-gray max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {test.description}
-      </ReactMarkdown>
-    </div>
-  )}
-              {/* {test.description && <p className="text-gray-700 text-sm leading-relaxed">{test.description}</p>} */}
+              {test.images && test.images.length > 0 && (
+                <div className="mt-4">
+                  <ImageGallery images={test.images} />
+                </div>
+              )}
             </div>
           ))}
         </div>

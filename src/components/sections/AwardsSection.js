@@ -1,7 +1,10 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { awardsAPI } from "../../services/api"
 import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm" // ✅ Enables bold, italic, lists, tables, etc.
+import remarkGfm from "remark-gfm"
+import ImageGallery from "../common/ImageGallery"
 
 const AwardsSection = () => {
   const [awards, setAwards] = useState([])
@@ -26,6 +29,25 @@ const AwardsSection = () => {
     if (!dateString) return ""
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", { year: "numeric", month: "long" })
+  }
+
+  const getLayoutClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "flex justify-center"
+    } else if (itemCount === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    } else if (itemCount === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClass = (itemCount) => {
+    if (itemCount === 1) {
+      return "bg-gray-50 rounded-lg p-6 max-w-3xl w-full"
+    }
+    return "bg-gray-50 rounded-lg p-6"
   }
 
   if (loading) {
@@ -60,9 +82,9 @@ const AwardsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Honors & Awards</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className={getLayoutClass(awards.length)}>
           {awards.map((award) => (
-            <div key={award._id} className="bg-gray-50 rounded-lg p-6">
+            <div key={award._id} className={getItemClass(awards.length)}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{award.title}</h3>
@@ -75,9 +97,13 @@ const AwardsSection = () => {
 
               {award.description && (
                 <div className="text-gray-700 mb-4 leading-relaxed prose prose-gray max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {award.description}
-                  </ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{award.description}</ReactMarkdown>
+                </div>
+              )}
+
+              {award.images && award.images.length > 0 && (
+                <div className="mb-4">
+                  <ImageGallery images={award.images} />
                 </div>
               )}
 

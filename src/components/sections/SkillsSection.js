@@ -1,3 +1,4 @@
+"use client"
 
 import { useState, useEffect } from "react"
 import { skillsAPI } from "../../services/api"
@@ -20,6 +21,25 @@ const SkillsSection = () => {
 
     fetchSkills()
   }, [])
+
+  const getLayoutClasses = (count) => {
+    if (count === 1) {
+      return "flex justify-center"
+    } else if (count === 2) {
+      return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+    } else if (count === 3) {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+    } else {
+      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  }
+
+  const getItemClasses = (count) => {
+    if (count === 1) {
+      return "max-w-2xl w-full"
+    }
+    return ""
+  }
 
   const getLevelColor = (level) => {
     switch (level) {
@@ -71,9 +91,12 @@ const SkillsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Skills</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={getLayoutClasses(skillsData.length)}>
           {skillsData.map((skillCategory) => (
-            <div key={skillCategory._id} className="bg-white rounded-lg shadow-md p-6">
+            <div
+              key={skillCategory._id}
+              className={`bg-white rounded-lg shadow-md p-6 ${getItemClasses(skillsData.length)}`}
+            >
               <h3 className="text-xl font-bold text-gray-900 mb-4">{skillCategory.category}</h3>
 
               <div className="space-y-3">
