@@ -79,39 +79,42 @@ const AdminActivitiesPublications = () => {
           </p>
         </div>
 
+
+
         {/* Tab Navigation */}
-        <div className="flex space-x-4 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab("activities")}
-            className={`px-6 py-3 font-medium border-b-2 transition-colors ${
-              activeTab === "activities"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Activities
-          </button>
-          <button
-            onClick={() => setActiveTab("publications")}
-            className={`px-6 py-3 font-medium border-b-2 transition-colors ${
-              activeTab === "publications"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Publications
-          </button>
-          <button
-            onClick={() => setActiveTab("gallery")}
-            className={`px-6 py-3 font-medium border-b-2 transition-colors ${
-              activeTab === "gallery"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Gallery
-          </button>
-        </div>
+<div className="flex space-x-0 sm:space-x-1 md:space-x-2 border-b border-gray-200">
+  <button
+    onClick={() => setActiveTab("activities")}
+    className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 font-medium border-b-2 transition-colors flex-1 text-center ${
+      activeTab === "activities"
+        ? "border-blue-600 text-blue-600"
+        : "border-transparent text-gray-600 hover:text-gray-900"
+    }`}
+  >
+    Activities
+  </button>
+  <button
+    onClick={() => setActiveTab("publications")}
+    className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 font-medium border-b-2 transition-colors flex-1 text-center ${
+      activeTab === "publications"
+        ? "border-blue-600 text-blue-600"
+        : "border-transparent text-gray-600 hover:text-gray-900"
+    }`}
+  >
+    Publications
+  </button>
+  <button
+    onClick={() => setActiveTab("gallery")}
+    className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 font-medium border-b-2 transition-colors flex-1 text-center ${
+      activeTab === "gallery"
+        ? "border-blue-600 text-blue-600"
+        : "border-transparent text-gray-600 hover:text-gray-900"
+    }`}
+  >
+    Gallery
+  </button>
+</div>
+
 
         {/* Activities Tab */}
         {activeTab === "activities" && (
