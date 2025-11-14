@@ -233,11 +233,11 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Description</label>
               <MarkdownEditor {...registerMarkdownField("description")} placeholder="Professional description" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+              <label className="block text-sm font-medium text-black mb-2">Profile Image</label>
               <ImageInput
                 register={register}
                 name="profileImage"
@@ -288,7 +288,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 w-full text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Content *</label>
+              <label className="block text-sm font-medium text-black mb-2">Content *</label>
               <MarkdownEditor
                 {...registerMarkdownField("content", { required: "Content is required" })}
                 placeholder="About content (supports Markdown)"
@@ -296,7 +296,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">About Image</label>
+              <label className="block text-sm font-medium text-black mb-2">About Image</label>
               <ImageInput
                 register={register}
                 name="image"
@@ -327,7 +327,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="flex items-center space-x-2">
               <input {...register("current")} type="checkbox" className="rounded" />
-              <label className="text-sm text-gray-700">Current Position</label>
+              <label className="text-sm text-black">Current Position</label>
             </div>
             <input
               {...register("startDate", { required: "Start date is required" })}
@@ -340,7 +340,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Job Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Job description and responsibilities (supports Markdown)"
@@ -353,7 +353,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Achievements</label>
+              <label className="block text-sm font-medium text-black mb-2">Achievements</label>
               <MarkdownEditor
                 {...registerMarkdownField("achievements")}
                 placeholder="Key achievements (one per line, supports Markdown)"
@@ -411,7 +411,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description/Achievements</label>
+              <label className="block text-sm font-medium text-black mb-2">Description/Achievements</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Description and achievements (supports Markdown)"
@@ -471,7 +471,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="flex items-center space-x-2">
               <input {...register("featured")} type="checkbox" className="rounded" />
-              <label className="text-sm text-gray-700">Featured Skill</label>
+              <label className="text-sm text-black">Featured Skill</label>
             </div>
             <input
               {...register("icon")}
@@ -490,7 +490,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Project Image</label>
+              <label className="block text-sm font-medium text-black mb-2">Project Image</label>
               <ImageInput
                 register={register}
                 name="image"
@@ -499,7 +499,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Project Description *</label>
+              <label className="block text-sm font-medium text-black mb-2">Project Description *</label>
               <MarkdownEditor
                 {...registerMarkdownField("description", { required: "Description is required" })}
                 placeholder="Project description, features, and technologies used (supports Markdown)"
@@ -513,7 +513,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="flex items-center space-x-2">
               <input {...register("featured")} type="checkbox" className="rounded" />
-              <label className="text-sm text-gray-700">Featured Project</label>
+              <label className="text-sm text-black">Featured Project</label>
             </div>
             <input
               {...register("liveUrl")}
@@ -568,10 +568,10 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             <div className="flex items-center space-x-2">
               <input {...register("current")} type="checkbox" className="rounded" />
-              <label className="text-sm text-gray-700">Currently Volunteering</label>
+              <label className="text-sm text-black">Currently Volunteering</label>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description of volunteer work</label>
+              <label className="block text-sm font-medium text-black mb-2">Description of volunteer work</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Description of volunteer work and impact (supports Markdown)"
@@ -622,7 +622,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <label className="block text-sm font-medium text-black mb-2">Abstract</label>
               <MarkdownEditor
                 {...registerMarkdownField("abstract")}
                 placeholder="Publication abstract (supports Markdown)"
@@ -690,7 +690,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Patent description (supports Markdown)"
@@ -731,7 +731,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Award Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Award Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Award description and significance (supports Markdown)"
@@ -772,7 +772,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Test score details (supports Markdown)"
@@ -884,7 +884,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Certification Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Certification Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Certification description and learning outcomes (supports Markdown)"
@@ -925,7 +925,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Course Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Course Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Course description and curriculum (supports Markdown)"
@@ -971,7 +971,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Talk Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Talk Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Talk description and key points (supports Markdown)"
@@ -1022,7 +1022,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Internship Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Internship Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Internship description and responsibilities (supports Markdown)"
@@ -1081,7 +1081,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Workshop Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Workshop Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Workshop description and agenda (supports Markdown)"
@@ -1132,7 +1132,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Training Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Training Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Training description and curriculum (supports Markdown)"
@@ -1183,7 +1183,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Appreciation description and context (supports Markdown)"
@@ -1254,7 +1254,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <label className="block text-sm font-medium text-black mb-2">Abstract</label>
               <MarkdownEditor
                 {...registerMarkdownField("abstract")}
                 placeholder="Paper abstract (supports Markdown)"
@@ -1305,7 +1305,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description/Abstract</label>
+              <label className="block text-sm font-medium text-black mb-2">Description/Abstract</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Research paper description and findings (supports Markdown)"
@@ -1371,7 +1371,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract</label>
+              <label className="block text-sm font-medium text-black mb-2">Abstract</label>
               <MarkdownEditor
                 {...registerMarkdownField("abstract")}
                 placeholder="Conference paper abstract (supports Markdown)"
@@ -1447,7 +1447,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               className="border rounded px-3 py-2 md:col-span-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Abstract/Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Abstract/Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("abstract")}
                 placeholder="Book chapter description and content (supports Markdown)"
@@ -1484,7 +1484,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             />
             {/* Using MultiImageUploader for gallery images */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Images</label>
+              <label className="block text-sm font-medium text-black mb-2">Gallery Images</label>
               <MultiImageUploader
                 images={images}
                 setImages={setImages}
@@ -1495,7 +1495,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Image Description</label>
+              <label className="block text-sm font-medium text-black mb-2">Image Description</label>
               <MarkdownEditor
                 {...registerMarkdownField("description")}
                 placeholder="Image description and context (supports Markdown)"
@@ -1504,7 +1504,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
             </div>
             <div className="flex items-center space-x-2">
               <input {...register("featured")} type="checkbox" className="rounded" />
-              <label className="text-sm text-gray-700">Featured Image</label>
+              <label className="text-sm text-black">Featured Image</label>
             </div>
           </div>
         )
@@ -1531,134 +1531,134 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
               <div className="flex-1">
                 {sectionName === "hero" && (
                   <div>
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-gray-600">{item.tagline}</p>
+                    <h3 className="font-semibold text-black">{item.name}</h3>
+                    <p className="text-black">{item.tagline}</p>
                   </div>
                 )}
                 {sectionName === "about" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.content?.substring(0, 100)}...</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.content?.substring(0, 100)}...</p>
                   </div>
                 )}
                 {sectionName === "experience" && (
                   <div>
-                    <h3 className="font-semibold">{item.position}</h3>
-                    <p className="text-gray-600">{item.company}</p>
+                    <h3 className="font-semibold text-black">{item.position}</h3>
+                    <p className="text-black">{item.company}</p>
                   </div>
                 )}
                 {sectionName === "education" && (
                   <div>
-                    <h3 className="font-semibold">{item.degree}</h3>
-                    <p className="text-gray-600">{item.institution}</p>
+                    <h3 className="font-semibold text-black">{item.degree}</h3>
+                    <p className="text-black">{item.institution}</p>
                   </div>
                 )}
                 {sectionName === "skills" && (
                   <div>
-                    <h3 className="font-semibold">{item.category}</h3>
-                    <p className="text-gray-600">{item.skills?.length || 0} skills</p>
+                    <h3 className="font-semibold text-black">{item.category}</h3>
+                    <p className="text-black">{item.skills?.length || 0} skills</p>
                   </div>
                 )}
                 {sectionName === "projects" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.description?.substring(0, 100)}...</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.description?.substring(0, 100)}...</p>
                   </div>
                 )}
                 {sectionName === "volunteer" && (
                   <div>
-                    <h3 className="font-semibold">{item.role}</h3>
-                    <p className="text-gray-600">{item.organization}</p>
+                    <h3 className="font-semibold text-black">{item.role}</h3>
+                    <p className="text-black">{item.organization}</p>
                   </div>
                 )}
                 {sectionName === "publications" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.journal}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.journal}</p>
                   </div>
                 )}
                 {sectionName === "patents" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">
                       {item.patentNumber} - {item.status}
                     </p>
                   </div>
                 )}
                 {sectionName === "awards" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.issuer}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.issuer}</p>
                   </div>
                 )}
                 {sectionName === "testscores" && (
                   <div>
-                    <h3 className="font-semibold">{item.testName}</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-black">{item.testName}</h3>
+                    <p className="text-black">
                       Score: {item.score}/{item.maxScore}
                     </p>
                   </div>
                 )}
                 {sectionName === "languages" && (
                   <div>
-                    <h3 className="font-semibold">{item.language}</h3>
-                    <p className="text-gray-600">{item.proficiency}</p>
+                    <h3 className="font-semibold text-black">{item.language}</h3>
+                    <p className="text-black">{item.proficiency}</p>
                   </div>
                 )}
                 {sectionName === "certifications" && (
                   <div>
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-gray-600">{item.issuer}</p>
+                    <h3 className="font-semibold text-black">{item.name}</h3>
+                    <p className="text-black">{item.issuer}</p>
                   </div>
                 )}
                 {sectionName === "courses" && (
                   <div>
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-gray-600">{item.provider}</p>
+                    <h3 className="font-semibold text-black">{item.name}</h3>
+                    <p className="text-black">{item.provider}</p>
                   </div>
                 )}
                 {sectionName === "talks" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.event}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.event}</p>
                   </div>
                 )}
                 {sectionName === "internships" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.company}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.company}</p>
                   </div>
                 )}
                 {sectionName === "workshops" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">
                       {item.type} - {item.location}
                     </p>
                   </div>
                 )}
                 {sectionName === "trainings" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.provider}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.provider}</p>
                   </div>
                 )}
                 {sectionName === "appreciations" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.awardedBy}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.awardedBy}</p>
                   </div>
                 )}
                 {sectionName === "journalpapers" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.journal}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.journal}</p>
                   </div>
                 )}
                 {sectionName === "researchpapers" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">
                       {Array.isArray(item.authors)
                         ? item.authors.join(", ").substring(0, 50)
                         : item.authors?.substring(0, 50)}
@@ -1668,20 +1668,20 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 )}
                 {sectionName === "conferencepapers" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.conference}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.conference}</p>
                   </div>
                 )}
                 {sectionName === "bookchapters" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.bookTitle}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.bookTitle}</p>
                   </div>
                 )}
                 {sectionName === "gallery" && (
                   <div>
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.category}</p>
+                    <h3 className="font-semibold text-black">{item.title}</h3>
+                    <p className="text-black">{item.category}</p>
                   </div>
                 )}
               </div>
@@ -1740,7 +1740,7 @@ const SectionManager = ({ sectionName, sectionLabel }) => {
                 reset()
                 setImages([]) // Clear images when cancelling form
               }}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md text-black hover:bg-gray-50"
             >
               Cancel
             </button>
