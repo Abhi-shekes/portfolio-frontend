@@ -107,6 +107,7 @@ const HeroSection = () => {
               <img
                 src={heroData.profileImage}
                 alt={heroData.name}
+                
                 className="w-40 h-40 rounded-full mx-auto object-cover shadow-2xl ring-4 ring-white/10"
                 onError={(e) => {
                   e.target.src = "/placeholder.svg?text=Profile+Image"
@@ -115,9 +116,14 @@ const HeroSection = () => {
             </div>
           )}
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-balance text-white">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance text-white">
             {heroData.name}
           </h1>
+
+{/* 
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-balance text-white">
+            {heroData.name}
+          </h1> */}
 
           <p className="text-2xl md:text-3xl text-gray-300 mb-8 font-light tracking-wide">
             {heroData.tagline}
